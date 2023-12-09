@@ -1,4 +1,4 @@
-package parsers;
+package org.example.parsers;
 
 import org.example.ParserWorker;
 

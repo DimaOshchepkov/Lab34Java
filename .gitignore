@@ -184,3 +184,6 @@ buildNumber.properties
 META-INF
 
 # End of https://www.toptal.com/developers/gitignore/api/maven,intellij,java,visualstudiocode
+
+#castom
+images/

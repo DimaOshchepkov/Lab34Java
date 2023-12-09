@@ -1,11 +1,11 @@
 package org.example;
 
+import org.example.parsers.Parser;
+import org.example.parsers.ParserSettings;
 import org.jsoup.nodes.Document;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
-import parsers.Parser;
-import parsers.ParserSettings;
 
 import java.io.IOException;
 import java.text.ParseException;

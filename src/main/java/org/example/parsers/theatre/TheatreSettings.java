@@ -1,6 +1,6 @@
-package parsers.theatre;
+package org.example.parsers.theatre;
 
-import parsers.ParserSettings;
+import org.example.parsers.ParserSettings;
 
 public class TheatreSettings extends ParserSettings {
 

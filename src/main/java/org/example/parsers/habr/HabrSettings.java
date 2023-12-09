@@ -1,5 +1,5 @@
-package parsers.habr;
-import parsers.ParserSettings;
+package org.example.parsers.habr;
+import org.example.parsers.ParserSettings;
 
 public class HabrSettings extends ParserSettings {
 

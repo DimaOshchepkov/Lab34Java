@@ -1,4 +1,4 @@
-package parsers.theatre.model;
+package org.example.parsers.theatre.model;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -15,5 +15,16 @@ public class Poster {
     private final String date;
     private final String duration;
     private final String ageLimit;
+
+    @Override
+    public String toString() {
+        return """
+               title= %s
+               imageUrl= %s
+               date= %s
+               duration= %s
+               ageLimit= %s
+               """.formatted(title, imageUrl, date, duration, ageLimit);
+    }
 
 }

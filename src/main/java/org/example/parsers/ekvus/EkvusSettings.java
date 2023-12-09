@@ -1,6 +1,6 @@
-package parsers.ekvus;
+package org.example.parsers.ekvus;
 
-import parsers.ParserSettings;
+import org.example.parsers.ParserSettings;
 
 public class EkvusSettings extends ParserSettings {
     public EkvusSettings(){
