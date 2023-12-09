@@ -1,6 +1,9 @@
 package org.example;
 
 import org.jsoup.nodes.Document;
+
+import lombok.AllArgsConstructor;
+import lombok.Data;
 import parsers.Parser;
 import parsers.ParserSettings;
 
@@ -8,16 +11,27 @@ import java.io.IOException;
 import java.text.ParseException;
 import java.util.ArrayList;
 
-public class ParserWorker <T>{
+@Data
+@AllArgsConstructor
+public class ParserWorker<T> {
+    private Parser<T> parser;
+    private ParserSettings parserSettings;
+    private HtmlLoader loader;
+    private boolean isActive;
+    private ArrayList<OnNewDataHandler<T>> onNewDataList = new ArrayList<>();
+    private ArrayList<OnCompleted> onCompletedList = new ArrayList<>();
 
-    Parser<T> parser;
-    ParserSettings parserSettings;
-    HtmlLoader loader;
-    boolean isActive;
-    ArrayList<OnNewDataHandler> onNewDataList = new ArrayList<>();
-    ArrayList<OnCompleted> onCompletedList = new ArrayList<>();
+    public void start() throws IOException, ParseException {
+        isActive = true;
+        worker();
+    }
+
     public ParserWorker(Parser<T> parser) {
         this.parser = parser;
+    }
+
+    public void abort() {
+        isActive = false;
     }
 
     private void worker() throws IOException, ParseException {
@@ -28,22 +42,10 @@ public class ParserWorker <T>{
             }
             Document document = loader.GetSourceByPageId(i);
             T result = parser.Parse(document);
-            onNewDataList.get(0).onNewData(this,result);
+            onNewDataList.get(0).onNewData(this, result);
         }
         onCompletedList.get(0).onCompleted(this);
         isActive = false;
-    }
-
-    public void start() throws IOException, ParseException {
-        isActive = true;
-        worker();
-    }
-    public void abort() {
-        isActive = false;
-    }
-
-    public void setParser(Parser<T> parser) {
-        this.parser = parser;
     }
 
     public void setParserSettings(ParserSettings parserSettings) {
@@ -51,20 +53,11 @@ public class ParserWorker <T>{
         loader = new HtmlLoader(parserSettings);
     }
 
-    public ParserSettings getParserSettings() {
-        return parserSettings;
-    }
-
-    public Parser<T> getParser() {
-        return parser;
-    }
     public interface OnNewDataHandler<T> {
         void onNewData(Object sender, T e);
     }
+
     public interface OnCompleted {
         void onCompleted(Object sender);
     }
-
-
-
 }

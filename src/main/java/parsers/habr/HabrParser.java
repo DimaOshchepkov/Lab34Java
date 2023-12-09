@@ -6,6 +6,7 @@ import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
+
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
@@ -15,13 +16,23 @@ import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
 import java.util.ArrayList;
 
+
 public class HabrParser implements Parser<ArrayList<Article>> {
+    private String folderPath;
+
+    public HabrParser(String targetPath) {
+        this.folderPath = targetPath;
+    }
+
+    public HabrParser() {
+        this.folderPath = "src\\images";
+    }
+
     @Override
     public ArrayList<Article> Parse(Document document) throws IOException {
         ArrayList<Article> articles = new ArrayList<>();
         Elements articleElements = document.select("article");
 
-        String folderPath = "C:/Users/Mtron/Desktop/ParseLib/images";
         try {
             Files.createDirectories(Paths.get(folderPath));
         } catch (IOException e) {

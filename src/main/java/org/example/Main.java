@@ -1,4 +1,5 @@
 package org.example;
+
 import parsers.Completed;
 import parsers.NewData;
 import parsers.ekvus.EkvusParser;
@@ -19,8 +20,8 @@ public class Main {
     public static void main(String[] args) throws IOException, InterruptedException, ParseException {
         ParserWorker<ArrayList<Afisha>> parser = new ParserWorker<>(new EkvusParser());
         parser.setParserSettings(new EkvusSettings());
-        parser.onCompletedList.add(new Completed());
-        parser.onNewDataList.add(new NewData());
+        parser.getOnCompletedList().add(new Completed());
+        parser.getOnNewDataList().add(new NewData());
 
         parser.start();
         Thread.sleep(10000);

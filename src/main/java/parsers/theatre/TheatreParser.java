@@ -19,13 +19,21 @@ import java.util.ArrayList;
 
 public class TheatreParser implements Parser<ArrayList<Poster>> {
     private static final Logger logger = LoggerFactory.getLogger(TheatreParser.class);
+    private String folderPath;
+
+    public TheatreParser(String targetPath) {
+        this.folderPath = targetPath;
+    }
+
+    public TheatreParser() {
+        this.folderPath = "src\\images";
+    }
     @Override
     public ArrayList<Poster> Parse(Document document) throws IOException {
 
         ArrayList<Poster> posters = new ArrayList<>();
         Elements postersElements = document.select("div.t_afisha");
 
-        String folderPath = "C:/Users/Mtron/Desktop/ParseLib/images";
         try{
             Files.createDirectories(Paths.get(folderPath));
         }
@@ -46,7 +54,13 @@ public class TheatreParser implements Parser<ArrayList<Poster>> {
             String title = tInfoAfishaElement.select("h3 a").textNodes().get(0).text();
             String ageLimit = tInfoAfishaElement.select(".value_limit").text();
 
-            posters.add(new Poster(title, imageUrl, date, duration, ageLimit));
+            posters.add(Poster.builder()
+                .title(title)
+                .date(date)
+                .ageLimit(ageLimit)
+                .duration(duration)
+                .imageUrl(imageUrl)
+                .build());
 
             URL url = new URL(imageUrl);
 

@@ -10,9 +10,8 @@ public class HtmlLoader {
 
     String url;
 
-    public HtmlLoader(ParserSettings settings)
-    {
-        url = settings.BASE_URL+"/"+ settings.PREFIX;
+    public HtmlLoader(ParserSettings settings){
+        url = settings.getBASE_URL()+"/"+ settings.getPREFIX();
     }
 
     public Document GetSourceByPageId(int id) throws IOException {
