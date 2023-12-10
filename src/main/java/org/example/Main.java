@@ -9,6 +9,7 @@ import java.util.Scanner;
 
 import org.apache.log4j.Logger;
 import org.apache.log4j.PropertyConfigurator;
+import org.example.gui.GUI;
 import org.example.parsers.Completed;
 import org.example.parsers.NewData;
 import org.example.parsers.ParserSettings;
@@ -28,7 +29,7 @@ import lombok.val;
 
 public class Main {
     public static void main(String[] args) throws IOException, InterruptedException, ParseException {
-
+/*
         Parser par = new EkvusParser();
         ParserSettings settings = new EkvusSettings();
         ParserWorker.OnCompleted completed = new Completed();
@@ -72,9 +73,13 @@ public class Main {
         parser.getOnCompletedList().add(completed);
         parser.getOnNewDataList().add(newDataHandler);
 
-        parser.start();
-        Thread.sleep(10000);
+        parser.execute();
+        //Thread.sleep(10000);
         parser.abort();
+
+*/
+        GUI form = new GUI();
+        form.setVisible(true);
     }
 
     public static String inputString(Scanner scanner, String message) {

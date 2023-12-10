@@ -10,42 +10,47 @@ import lombok.Data;
 import java.io.IOException;
 import java.text.ParseException;
 import java.util.ArrayList;
+import java.util.List;
+
+import javax.swing.SwingWorker;
+
 
 @Data
 @AllArgsConstructor
-public class ParserWorker<T> {
+public class ParserWorker<T> extends SwingWorker<Void, T> {
     private Parser<T> parser;
     private ParserSettings parserSettings;
     private HtmlLoader loader;
-    private boolean isActive;
     private ArrayList<OnNewDataHandler<T>> onNewDataList = new ArrayList<>();
     private ArrayList<OnCompleted> onCompletedList = new ArrayList<>();
 
-    public void start() throws IOException, ParseException {
-        isActive = true;
-        worker();
-    }
 
     public ParserWorker(Parser<T> parser) {
         this.parser = parser;
     }
 
-    public void abort() {
-        isActive = false;
+    public ParserWorker(Parser<T> parser, ParserSettings settings) {
+        this.parser = parser;
+        this.parserSettings = settings;
+        loader = new HtmlLoader(settings);
     }
 
-    private void worker() throws IOException, ParseException {
+    @Override
+    protected Void doInBackground() throws Exception {
         for (int i = parserSettings.getStartPoint(); i <= parserSettings.getEndPoint(); i++) {
-            if (!isActive) {
-                onCompletedList.get(0).onCompleted(this);
-                return;
+            if (isCancelled()) {
+                return null;
             }
-            Document document = loader.GetSourceByPageId(i);
-            T result = parser.parse(document);
-            onNewDataList.get(0).onNewData(this, result);
+    
+            try {
+                Document document = loader.GetSourceByPageId(i);
+                T result = parser.parse(document);
+                publish(result); // Публикуем промежуточный результат для обновления GUI
+            } catch (IOException | ParseException e) {
+                // Обработка ошибок при неудачной загрузке или парсинге
+            }
         }
-        onCompletedList.get(0).onCompleted(this);
-        isActive = false;
+        return null;
     }
 
     public void setParserSettings(ParserSettings parserSettings) {
@@ -59,5 +64,18 @@ public class ParserWorker<T> {
 
     public interface OnCompleted {
         void onCompleted(Object sender);
+    }
+
+    @Override
+    protected void process(List<T> chunks) {
+        // Обновление GUI на основе полученных результатов
+        for (T result : chunks) {
+            onNewDataList.get(0).onNewData(this, result);
+        }
+    }
+
+    @Override
+    protected void done() {
+        onCompletedList.get(0).onCompleted(this);
     }
 }
