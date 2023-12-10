@@ -1,12 +1,11 @@
 package org.example.parsers.theatre;
 
+import org.example.ImageLoader;
 import org.example.parsers.Parser;
 import org.example.parsers.theatre.model.Poster;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
-
-import lombok.extern.slf4j.Slf4j;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -24,6 +23,8 @@ public class TheatreParser implements Parser<ArrayList<Poster>> {
 
     private final String folderPath;
 
+    ImageLoader imageLoader = new ImageLoader();
+
     public TheatreParser(String targetPath) {
         this.folderPath = targetPath;
     }
@@ -33,7 +34,7 @@ public class TheatreParser implements Parser<ArrayList<Poster>> {
     }
 
     @Override
-    public ArrayList<Poster> Parse(Document document) {
+    public ArrayList<Poster> parse(Document document) {
         ArrayList<Poster> posters = new ArrayList<>();
         Elements postersElements = document.select("div.t_afisha");
 
@@ -42,7 +43,7 @@ public class TheatreParser implements Parser<ArrayList<Poster>> {
         for (Element poster : postersElements) {
             try {
                 Poster parsedPoster = parsePoster(poster);
-                downloadImage(parsedPoster.getImageUrl());
+                imageLoader.downloadImage(parsedPoster.getImageUrl(), folderPath);
                 posters.add(parsedPoster);
             } catch (ParseException | IllegalArgumentException e) {
                 e.printStackTrace();
@@ -75,22 +76,6 @@ public class TheatreParser implements Parser<ArrayList<Poster>> {
             Files.createDirectories(Paths.get(folderPath));
         } catch (IOException e) {
             e.printStackTrace();
-        }
-    }
-
-    private void downloadImage(String imageUrl) {
-        if (imageUrl.startsWith("https")) {
-            try {
-                URL url = new URL(imageUrl);
-                String fileName = imageUrl.substring(imageUrl.lastIndexOf('/') + 1);
-                Path imagePath = Paths.get(folderPath, fileName);
-
-                try (InputStream in = url.openStream()) {
-                    Files.copy(in, imagePath, StandardCopyOption.REPLACE_EXISTING);
-                }
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
         }
     }
 }

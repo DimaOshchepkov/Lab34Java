@@ -2,8 +2,12 @@ package org.example.parsers;
 
 import org.example.ParserWorker;
 
-public class NewData<T> implements ParserWorker.OnNewDataHandler<T> {
+import lombok.val;
+
+public class NewData<T extends Iterable<?>> implements ParserWorker.OnNewDataHandler<T> {
     public void onNewData(Object sender, T args) {
-            System.out.println(args);
+            for (val arg : args) {
+                System.out.println(arg);
+            }
     }
 }

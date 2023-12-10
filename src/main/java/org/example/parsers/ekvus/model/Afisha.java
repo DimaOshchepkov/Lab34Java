@@ -18,11 +18,11 @@ public class Afisha {
     @Override
     public String toString() {
         return """
-                %ntitle= %s
+                title= %s
                 date= %s
                 imageUrl= %s
                 duration= %s
-                ageLimit= %s%n
+                ageLimit= %s
                 """.formatted(title, date, imageUrl, duration, ageLimit);
     }
 }

@@ -41,7 +41,7 @@ public class ParserWorker<T> {
                 return;
             }
             Document document = loader.GetSourceByPageId(i);
-            T result = parser.Parse(document);
+            T result = parser.parse(document);
             onNewDataList.get(0).onNewData(this, result);
         }
         onCompletedList.get(0).onCompleted(this);

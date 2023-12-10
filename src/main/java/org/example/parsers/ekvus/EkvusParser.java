@@ -1,15 +1,13 @@
 package org.example.parsers.ekvus;
 
 import org.apache.log4j.Logger;
+import org.example.ImageLoader;
 import org.example.parsers.Parser;
 import org.example.parsers.ekvus.model.Afisha;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
-
-import lombok.extern.log4j.Log4j;
-import lombok.extern.slf4j.Slf4j;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -28,6 +26,8 @@ public class EkvusParser implements Parser<ArrayList<Afisha>> {
     private static final String DEFAULT_FOLDER_PATH = "src\\images";
     private final String folderPath;
 
+    ImageLoader imageLoader = new ImageLoader();
+
     public EkvusParser(String targetPath) {
         this.folderPath = targetPath;
     }
@@ -37,7 +37,7 @@ public class EkvusParser implements Parser<ArrayList<Afisha>> {
     }
 
     @Override
-    public ArrayList<Afisha> Parse(Document document) throws IOException {
+    public ArrayList<Afisha> parse(Document document) throws IOException {
 
         Elements postersElements = document.select("*.page_box")
                 .select("tr:has(*:gt(2))");
@@ -45,9 +45,8 @@ public class EkvusParser implements Parser<ArrayList<Afisha>> {
         createDirectoryIfNotExists(folderPath);
 
         ArrayList<Afisha> posters = new ArrayList<>();
-        int ind = 0;
+
         for (Element poster : postersElements) {
-            log.debug("Обрабатывается пост" + Integer.toString(ind)); ind++;
             String date = poster.select("td:eq(0) > a > font").text();
             String title = poster.select("td:eq(1) > a").text();
             String ageLimit = poster.select("td:eq(1) > a > span").text();
@@ -64,7 +63,7 @@ public class EkvusParser implements Parser<ArrayList<Afisha>> {
                     .imageUrl(imageUrl)
                     .build());
 
-            downloadImage(imageUrl);
+            imageLoader.downloadImage(imageUrl, folderPath);
         }
         return posters;
     }
@@ -98,20 +97,6 @@ public class EkvusParser implements Parser<ArrayList<Afisha>> {
         Path path = Paths.get(folderPath);
         if (!Files.exists(path)) {
             Files.createDirectories(path);
-        }
-    }
-
-    private void downloadImage(String imageUrl) throws IOException {
-        if (imageUrl.startsWith("https")) {
-            URL url = new URL(imageUrl);
-            String fileName = imageUrl.substring(imageUrl.lastIndexOf('/') + 1);
-            Path imagePath = Paths.get(folderPath, fileName);
-
-            try (InputStream in = url.openStream()) {
-                Files.copy(in, imagePath, StandardCopyOption.REPLACE_EXISTING);
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
         }
     }
 }

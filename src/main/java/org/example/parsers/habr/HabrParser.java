@@ -1,5 +1,6 @@
 package org.example.parsers.habr;
 
+import org.example.ImageLoader;
 import org.example.parsers.Parser;
 import org.example.parsers.habr.model.Article;
 import org.jsoup.nodes.Document;
@@ -19,6 +20,8 @@ public class HabrParser implements Parser<ArrayList<Article>> {
     private static final String DEFAULT_FOLDER_PATH = "src\\images";
     private final String folderPath;
 
+    ImageLoader imageLoader = new ImageLoader();
+
     public HabrParser(String targetPath) {
         this.folderPath = targetPath;
     }
@@ -28,7 +31,7 @@ public class HabrParser implements Parser<ArrayList<Article>> {
     }
 
     @Override
-    public ArrayList<Article> Parse(Document document) throws IOException {
+    public ArrayList<Article> parse(Document document) throws IOException {
         ArrayList<Article> articles = new ArrayList<>();
         Elements articleElements = document.select("article");
 
@@ -45,7 +48,7 @@ public class HabrParser implements Parser<ArrayList<Article>> {
                     .imageUrl(imageUrl)
                     .build());
 
-            downloadImage(imageUrl);
+            imageLoader.downloadImage(imageUrl, folderPath);
         }
 
         return articles;
