@@ -12,8 +12,8 @@ import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.swing.SwingUtilities;
 import javax.swing.SwingWorker;
-
 
 @Data
 @AllArgsConstructor
@@ -23,7 +23,6 @@ public class ParserWorker<T> extends SwingWorker<Void, T> {
     private HtmlLoader loader;
     private ArrayList<OnNewDataHandler<T>> onNewDataList = new ArrayList<>();
     private ArrayList<OnCompleted> onCompletedList = new ArrayList<>();
-
 
     public ParserWorker(Parser<T> parser) {
         this.parser = parser;
@@ -41,7 +40,7 @@ public class ParserWorker<T> extends SwingWorker<Void, T> {
             if (isCancelled()) {
                 return null;
             }
-    
+
             try {
                 Document document = loader.GetSourceByPageId(i);
                 T result = parser.parse(document);
@@ -68,9 +67,10 @@ public class ParserWorker<T> extends SwingWorker<Void, T> {
 
     @Override
     protected void process(List<T> chunks) {
-        // Обновление GUI на основе полученных результатов
         for (T result : chunks) {
-            onNewDataList.get(0).onNewData(this, result);
+            SwingUtilities.invokeLater(() -> {
+                onNewDataList.get(0).onNewData(this, result);
+            });
         }
     }
 

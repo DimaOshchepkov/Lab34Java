@@ -6,6 +6,7 @@ import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Scanner;
+import java.util.concurrent.ExecutionException;
 
 import org.apache.log4j.Logger;
 import org.apache.log4j.PropertyConfigurator;
@@ -29,7 +30,7 @@ import lombok.val;
 
 public class Main {
     public static void main(String[] args) throws IOException, InterruptedException, ParseException {
-/*
+
         Parser par = new EkvusParser();
         ParserSettings settings = new EkvusSettings();
         ParserWorker.OnCompleted completed = new Completed();
@@ -68,18 +69,23 @@ public class Main {
             }
         }
 
-        ParserWorker<ArrayList<Afisha>> parser = new ParserWorker<>(par);
+        ParserWorker<ArrayList<?>> parser = new ParserWorker<>(par);
         parser.setParserSettings(settings);
         parser.getOnCompletedList().add(completed);
         parser.getOnNewDataList().add(newDataHandler);
 
+        
         parser.execute();
-        //Thread.sleep(10000);
-        parser.abort();
+        try {
+            parser.get();
+        } catch (ExecutionException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
 
-*/
+/*
         GUI form = new GUI();
-        form.setVisible(true);
+        form.setVisible(true);*/
     }
 
     public static String inputString(Scanner scanner, String message) {

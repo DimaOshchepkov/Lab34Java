@@ -29,7 +29,6 @@ public class GUI extends JFrame implements ParserWorker.OnNewDataHandler<ArrayLi
     public GUI() {
         JFrame.setDefaultLookAndFeelDecorated(true);
         setTitle("АААОООААА");
-        // setIconImage(new ImageIcon("icons/HeronWater.png").getImage());
         setSize(1200, 800);
         setMinimumSize(new Dimension(800, 500));
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
